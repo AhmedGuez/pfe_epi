@@ -1,0 +1,96 @@
+/* Tailwind Base Classes */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Light Mode */
+@media (prefers-color-scheme: light) {
+    body {
+        background-color: #ffffff;
+        color: #000000;
+    }
+
+    table {
+        background-color: #f9f9f9;
+    }
+
+    th {
+        background-color: #f1f1f1;
+        color: #333333;
+    }
+
+    td {
+        background-color: #ffffff;
+        color: #333333;
+    }
+
+    .btn {
+        background-color: #007bff; /* Blue background */
+        color: #ffffff; /* White text */
+        border: 1px solid #0056b3; /* Blue border */
+    }
+
+    .btn:hover {
+        background-color: #0056b3; /* Darker blue on hover */
+        color: #ffffff; /* White text */
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    input[type="checkbox"] {
+        background-color: #ffffff;
+        color: #000000;
+        border: 1px solid #ccc;
+    }
+
+    input::placeholder {
+        color: #aaa;
+    }
+}
+
+/* Dark Mode */
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #121212;
+        color: #ffffff;
+    }
+
+    table {
+        background-color: #1e1e1e;
+    }
+
+    th {
+        background-color: #2a2a2a;
+        color: #f1f1f1;
+    }
+
+    td {
+        background-color: #1e1e1e;
+        color: #f1f1f1;
+    }
+
+    .btn {
+        background-color: #fff; /* Lighter blue background */
+        color: #000; /* White text */
+        border: 1px solid #1565c0; /* Darker blue border */
+    }
+
+    .btn:hover {
+        background-color: #fff; /* Darker blue on hover */
+        color: #000; /* White text */
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    input[type="checkbox"] {
+        background-color: #1e1e1e; /* Dark background */
+        color: #000; /* Light text */
+        border: 1px solid #444; /* Slightly lighter border */
+    }
+
+    input::placeholder {
+        color: #666;
+    }
+}

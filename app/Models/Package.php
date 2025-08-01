@@ -1,0 +1,31 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
+
+class Package extends Model
+{
+   protected $guarded = [];
+    
+    protected static function boot()
+    {
+        parent::boot();
+        
+        static::creating(function ($model) {
+            $model->qr_code = Str::uuid();
+            $model->created_by = auth()->id();
+        });
+    }
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
+
+    public function depot()
+    {
+        return $this->belongsTo(Depot::class);
+    }
+}
