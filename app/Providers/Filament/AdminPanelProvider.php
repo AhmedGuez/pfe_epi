@@ -79,11 +79,8 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->sidebarCollapsibleOnDesktop()
             ->brandName('CSP SOLUTIONS')
-<<<<<<< HEAD
             ->favicon(asset('assets/logo-black.png'))
-=======
             ->favicon(asset('assets/logo-csp.jpg'))
->>>>>>> 134b51d099f5bef095a026a6918f45d39e8d1d54
             ->brandLogoHeight('4rem');
     }
 }
