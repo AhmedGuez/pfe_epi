@@ -14,6 +14,9 @@ class Commande extends Model
 
     protected $casts = [
         'status' => CommandeStatus::class,
+        'date_commande' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     public function client()

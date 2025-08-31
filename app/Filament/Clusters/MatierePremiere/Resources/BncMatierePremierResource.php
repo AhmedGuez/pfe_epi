@@ -238,8 +238,8 @@ class BncMatierePremierResource extends Resource
         return [
             'index' => Pages\ListBncMatierePremiers::route('/'),
             'view' => Pages\BncMatierePremiereView::route('/{record}'),
-            // 'create' => Pages\CreateBncMatierePremier::route('/create'),
-            // 'edit' => Pages\EditBncMatierePremier::route('/{record}/edit'),
+            'create' => Pages\CreateBncMatierePremier::route('/create'),
+            'edit' => Pages\EditBncMatierePremier::route('/{record}/edit'),
         ];
     }
 }

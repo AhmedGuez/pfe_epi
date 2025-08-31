@@ -21,6 +21,7 @@ use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use App\Filament\Actions\DirectDeleteAction;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -218,7 +219,7 @@ class BnsBobineResource extends Resource
                 ->label('')
                 ->visible(fn ($record) => in_array($record->status, [false, 0, 'false'], true)),
 
-                Tables\Actions\DeleteAction::make()
+                DirectDeleteAction::make()
                 ->label('')
                 ->visible(fn ($record) => in_array($record->status, [false, 0, 'false'], true)),
 
@@ -268,8 +269,8 @@ class BnsBobineResource extends Resource
     {
         return [
             'index' => Pages\ListBnsBobines::route('/'),
-            // 'create' => Pages\CreateBnsBobine::route('/create'),
-            // 'edit' => Pages\EditBnsBobine::route('/{record}/edit'),
+            'create' => Pages\CreateBnsBobine::route('/create'),
+            'edit' => Pages\EditBnsBobine::route('/{record}/edit'),
         ];
     }
 }

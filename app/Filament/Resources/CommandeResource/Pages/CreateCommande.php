@@ -28,7 +28,7 @@ class CreateCommande extends CreateRecord
         $commande = $this->record;
     
         // Fetch all users with the 'admin' role
-        $adminUsers = User::role('admin')->get();
+        $adminUsers = User::role('Superadmin')->get();
     
         foreach ($adminUsers as $user) {
             Notification::make()

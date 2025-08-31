@@ -8,6 +8,7 @@ use App\Models\BnsMargoumSemiFini;
 use App\Models\BnsMargoumSemiFiniArticles;
 use App\Models\Commande;
 use Illuminate\Http\Request;
+use App\Models\Client;
 
 class BnsController extends Controller
 {
@@ -57,6 +58,8 @@ class BnsController extends Controller
         $one_hour_later = $created_at + (1 * 60 * 60); // Add one hour
         $time = date('H:i:s', $one_hour_later); // Format the result
 
+        $clients = Client::all()->pluck('nom_client', 'id');
+
         // Render the view with the data
         return view('bnsMargoumSf', [
             'articles' => $articles,
@@ -66,6 +69,7 @@ class BnsController extends Controller
             'time' => $time,
             'deliverd' => $deliverd,
             'client_name' => $client_name,
+            'clients' => $clients,
         ]);
     }
 }

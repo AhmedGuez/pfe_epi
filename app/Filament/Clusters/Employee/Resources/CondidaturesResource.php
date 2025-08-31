@@ -12,6 +12,7 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use App\Filament\Actions\DirectDeleteAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -104,7 +105,7 @@ class CondidaturesResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                DirectDeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -124,8 +125,8 @@ class CondidaturesResource extends Resource
     {
         return [
             'index' => Pages\ListCondidatures::route('/'),
-            // 'create' => Pages\CreateCondidatures::route('/create'),
-            // 'edit' => Pages\EditCondidatures::route('/{record}/edit'),
+            'create' => Pages\CreateCondidatures::route('/create'),
+            'edit' => Pages\EditCondidatures::route('/{record}/edit'),
         ];
     }
 }

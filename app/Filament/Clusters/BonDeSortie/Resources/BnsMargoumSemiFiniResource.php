@@ -293,8 +293,8 @@ class BnsMargoumSemiFiniResource extends Resource
     {
         return [
             'index' => Pages\ListBnsMargoumSemiFinis::route('/'),
-            // 'create' => Pages\CreateBnsMargoumSemiFini::route('/create'),
-            // 'edit' => Pages\EditBnsMargoumSemiFini::route('/{record}/edit'),
+            'create' => Pages\CreateBnsMargoumSemiFini::route('/create'),
+            'edit' => Pages\EditBnsMargoumSemiFini::route('/{record}/edit'),
         ];
     }
 }

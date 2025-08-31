@@ -140,8 +140,8 @@ class AvancesResource extends Resource
     {
         return [
             'index' => Pages\ListAvances::route('/'),
-            // 'create' => Pages\CreateAvances::route('/create'),
-            // 'edit' => Pages\EditAvances::route('/{record}/edit'),
+            'create' => Pages\CreateAvances::route('/create'),
+            'edit' => Pages\EditAvances::route('/{record}/edit'),
         ];
     }
 }

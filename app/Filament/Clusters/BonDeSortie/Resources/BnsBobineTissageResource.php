@@ -220,8 +220,8 @@ class BnsBobineTissageResource extends Resource
     {
         return [
             'index' => Pages\ListBnsBobineTissages::route('/'),
-            // 'create' => Pages\CreateBnsBobineTissage::route('/create'),
-            // 'edit' => Pages\EditBnsBobineTissage::route('/{record}/edit'),
+            'create' => Pages\CreateBnsBobineTissage::route('/create'),
+            'edit' => Pages\EditBnsBobineTissage::route('/{record}/edit'),
         ];
     }
 }

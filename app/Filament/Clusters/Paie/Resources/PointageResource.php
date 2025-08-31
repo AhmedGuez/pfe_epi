@@ -15,6 +15,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use App\Filament\Actions\DirectDeleteAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
@@ -85,7 +86,7 @@ class PointageResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make()->label(''),
                 Tables\Actions\ViewAction::make()->label(''),
-                Tables\Actions\DeleteAction::make()->label(''),
+                DirectDeleteAction::make()->label(''),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -106,8 +107,8 @@ class PointageResource extends Resource
     {
         return [
             'index' => Pages\ListPointages::route('/'),
-            // 'create' => Pages\CreatePointage::route('/create'),
-            // 'edit' => Pages\EditPointage::route('/{record}/edit'),
+            'create' => Pages\CreatePointage::route('/create'),
+            'edit' => Pages\EditPointage::route('/{record}/edit'),
             'mark-attendance' => MarkAttendance::route('/mark-attendance'),
         ];
     }

@@ -128,8 +128,8 @@ class MiseAPiedResource extends Resource
     {
         return [
             'index' => Pages\ListMiseAPieds::route('/'),
-            // 'create' => Pages\CreateMiseAPied::route('/create'),
-            // 'edit' => Pages\EditMiseAPied::route('/{record}/edit'),
+            'create' => Pages\CreateMiseAPied::route('/create'),
+            'edit' => Pages\EditMiseAPied::route('/{record}/edit'),
         ];
     }
 }

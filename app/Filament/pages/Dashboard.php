@@ -29,5 +29,5 @@ class Dashboard extends BaseDashboard
                     ->columns(2),
             ]);
     }
-    
+
 }

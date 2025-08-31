@@ -13,6 +13,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use App\Filament\Actions\DirectDeleteAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -60,7 +61,7 @@ class ArticleMatierePremiereResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make()->label(''),
                 Tables\Actions\EditAction::make()->label(''),
-                Tables\Actions\DeleteAction::make()->label(''),
+                DirectDeleteAction::make()->label(''),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -93,8 +94,8 @@ class ArticleMatierePremiereResource extends Resource
     {
         return [
             'index' => Pages\ListArticleMatierePremieres::route('/'),
-            // 'create' => Pages\CreateArticleMatierePremiere::route('/create'),
-            // 'edit' => Pages\EditArticleMatierePremiere::route('/{record}/edit'),
+            'create' => Pages\CreateArticleMatierePremiere::route('/create'),
+            'edit' => Pages\EditArticleMatierePremiere::route('/{record}/edit'),
         ];
     }
 }

@@ -13,6 +13,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use App\Filament\Actions\DirectDeleteAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -60,7 +61,7 @@ class AvertissementResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make()->label(''),
                 Tables\Actions\EditAction::make()->label(''),
-                Tables\Actions\DeleteAction::make()->label(''),
+                DirectDeleteAction::make()->label(''),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -80,8 +81,8 @@ class AvertissementResource extends Resource
     {
         return [
             'index' => Pages\ListAvertissements::route('/'),
-            // 'create' => Pages\CreateAvertissement::route('/create'),
-            // 'edit' => Pages\EditAvertissement::route('/{record}/edit'),
+            'create' => Pages\CreateAvertissement::route('/create'),
+            'edit' => Pages\EditAvertissement::route('/{record}/edit'),
         ];
     }
 }

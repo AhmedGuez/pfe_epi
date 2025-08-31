@@ -88,8 +88,8 @@ class LicenciementResource extends Resource
     {
         return [
             'index' => Pages\ListLicenciements::route('/'),
-            // 'create' => Pages\CreateLicenciement::route('/create'),
-            // 'edit' => Pages\EditLicenciement::route('/{record}/edit'),
+            'create' => Pages\CreateLicenciement::route('/create'),
+            'edit' => Pages\EditLicenciement::route('/{record}/edit'),
         ];
     }
 }

@@ -20,6 +20,7 @@ use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use App\Filament\Actions\DirectDeleteAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -30,6 +31,7 @@ use Filament\Tables\Actions\Action;
 
 class DemandeAchatsResource extends Resource
 {
+    
     protected static ?string $model = DemandeAchat::class;
 
     protected static ?string $navigationGroup = 'Gestion des Achats';
@@ -115,7 +117,7 @@ class DemandeAchatsResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                DirectDeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

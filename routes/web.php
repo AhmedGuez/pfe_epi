@@ -8,7 +8,9 @@ use App\Http\Controllers\BnsController;
 use App\Http\Controllers\BnsDechetController;
 use App\Http\Controllers\BnsRetourBobineController;
 use App\Http\Controllers\BnsStockMargoumController;
+use App\Http\Controllers\ClientUserController;
 use App\Http\Controllers\CommandeController;
+use App\Http\Controllers\CommandePrintController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeliveryController;
 use App\Http\Controllers\DownloadBnsBobine;
@@ -66,12 +68,13 @@ Route::get('/{record}/pdf',[DownloadBnsBobine::class,'downloadBnsBobine'])->name
 // Route::get('/{record}/bns/margoum/pdf',[BnsController::class,'downloadBnsMargoumSf'])->name('bnsMargoumSf.pdf.download');
 Route::get('/{record}/commande/pdf',[DownloadCommande::class,'downloadCommande'])->name('commande.pdf.download');
 Route::get('/{record}/Jrcommande/pdf',[DownloadCommande::class,'downloadJrCommande'])->name('Jrcommande.pdf.download');
+Route::get('/commande/{commande}/print', [CommandePrintController::class, 'print'])->name('commande.print');
 // Route::get('/list',[DownloadCommande::class,'downloadList'])->name('list.download.pdf');
-// Route::get('/{record}/suivi',[SuiviCommande::class,'downloadSuivi'])->name('suivi.pdf.download');
-// Route::get('/stock',[StockController::class,'Stock'])->name('stock.download.pdf');
+Route::get('/{record}/suivi',[SuiviCommande::class,'downloadSuivi'])->name('suivi.pdf.download');
+Route::get('/stock',[StockController::class,'Stock'])->name('stock.download.pdf');
 // Route::get('/stock-tapis',[StockController::class,'StockTapis'])->name('stock.download.pdf.tapis');
 
-// Route::get('/stocks', [Stock::class, 'index'])->name('stocks.index');
+Route::get('/stocks', [Stock::class, 'index'])->name('stocks.index');
 
 
 
@@ -98,6 +101,18 @@ Route::get('/margoum-stock', [StockController::class, 'showStock'])->name('stock
 
 Route::get('/home', [IndexController::class, 'index'])->name('home');
 Route::get('/latest-arrivages', [ArivageController::class, 'index'])->name('latest-arrivages');
+
+// Client-User Management Routes
+Route::middleware(['auth'])->group(function () {
+    Route::prefix('client-users')->group(function () {
+        Route::post('/{client}/attach', [ClientUserController::class, 'attachUser'])->name('client-users.attach');
+        Route::delete('/{client}/detach', [ClientUserController::class, 'detachUser'])->name('client-users.detach');
+        Route::put('/{client}/update-role', [ClientUserController::class, 'updateUserRole'])->name('client-users.update-role');
+        Route::get('/{client}/users', [ClientUserController::class, 'getClientUsers'])->name('client-users.get-users');
+        Route::get('/my-clients', [ClientUserController::class, 'getUserClients'])->name('client-users.my-clients');
+        Route::put('/{client}/set-primary', [ClientUserController::class, 'setPrimaryUser'])->name('client-users.set-primary');
+    });
+});
 
 
 Route::get('/{record}/file/dowlnload',[DownloadCommande::class,'downloadFile'])->name('demande.download');

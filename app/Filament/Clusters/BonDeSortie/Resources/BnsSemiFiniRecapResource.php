@@ -129,8 +129,8 @@ class BnsSemiFiniRecapResource extends Resource
     {
         return [
             'index' => Pages\ListBnsSemiFiniRecaps::route('/'),
-            // 'create' => Pages\CreateBnsSemiFiniRecap::route('/create'),
-            // 'edit' => Pages\EditBnsSemiFiniRecap::route('/{record}/edit'),
+            'create' => Pages\CreateBnsSemiFiniRecap::route('/create'),
+            'edit' => Pages\EditBnsSemiFiniRecap::route('/{record}/edit'),
         ];
     }
 }

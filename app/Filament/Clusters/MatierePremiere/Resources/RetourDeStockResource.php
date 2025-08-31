@@ -224,8 +224,8 @@ class RetourDeStockResource extends Resource
     {
         return [
             'index' => Pages\ListRetourDeStocks::route('/'),
-            // 'create' => Pages\CreateRetourDeStock::route('/create'),
-            // 'edit' => Pages\EditRetourDeStock::route('/{record}/edit'),
+            'create' => Pages\CreateRetourDeStock::route('/create'),
+            'edit' => Pages\EditRetourDeStock::route('/{record}/edit'),
         ];
     }
 }

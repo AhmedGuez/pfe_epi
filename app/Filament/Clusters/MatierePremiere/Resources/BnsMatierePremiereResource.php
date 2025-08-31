@@ -295,8 +295,8 @@ class BnsMatierePremiereResource extends Resource
     {
         return [
             'index' => Pages\ListBnsMatierePremieres::route('/'),
-            // 'create' => Pages\CreateBnsMatierePremiere::route('/create'),
-            // 'edit' => Pages\EditBnsMatierePremiere::route('/{record}/edit'),
+            'create' => Pages\CreateBnsMatierePremiere::route('/create'),
+            'edit' => Pages\EditBnsMatierePremiere::route('/{record}/edit'),
         ];
     }
 }
