@@ -79,6 +79,10 @@ class PackageResource extends Resource
         ])->defaultSort('created_at', 'desc')
         ->actions([
             Action::make('confirm')
+                ->modalHeading('Confirm Package')
+                ->modalDescription('Are you sure you want to confirm this package? This will change its status to Confirmed.')
+                ->modalSubmitActionLabel('Yes, Confirm Package')
+                ->modalCancelActionLabel('Cancel')
                 ->action(function (Package $record) {
                     $record->update([
                         'status' => 'Confirmed',

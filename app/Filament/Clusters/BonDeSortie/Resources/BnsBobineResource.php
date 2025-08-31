@@ -225,13 +225,16 @@ class BnsBobineResource extends Resource
 
                 Action::make('status')
                 ->label('')
+                ->modalHeading('Confirm Status Update')
+                ->modalDescription('Are you sure you want to update the status of this bon sortie?')
+                ->modalSubmitActionLabel('Yes, Update Status')
+                ->modalCancelActionLabel('Cancel')
                 ->action(function (Model $record) {
                    
                     $record->update([
                         'status' => true,
                     ]);
                 })
-                ->requiresConfirmation()
                 ->disabled(fn(Model $record) => $record->status)
                 ->color('success')
                 ->icon('heroicon-m-check-badge'),

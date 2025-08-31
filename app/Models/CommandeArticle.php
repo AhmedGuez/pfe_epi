@@ -12,10 +12,6 @@ class CommandeArticle extends Model
 
     protected $guarded = [];
 
-    public function client()
-    {
-        return $this->belongsTo(Client::class, 'client_transferred_to'); // Adjust the foreign key if necessary
-    }
     public function commande()
     {
         return $this->belongsTo(Commande::class);

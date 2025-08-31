@@ -13,13 +13,12 @@ class SuiviCommande extends Controller
     public function downloadSuivi(Commande $record)
     {
         // Using eager loading to fetch related data in one go
-        $articleData = CommandeArticle::with('article')->where('commande_id', $record->id)->get();
+        $articleData = CommandeArticle::with('product')->where('commande_id', $record->id)->get();
     
-        $articles = $articleData->map(function ($data) {
-            $quantite_en_m2 = $data->article->coefficient_metrage * $data->nombre_de_pieces;
+        $articles = $articleData->map(function ($data) use ($record) {
     
             return [
-                'code_article' => $data->article->code_article,
+                'code_article' => $data->product->code_article,
                 'nombre_de_pieces' => $data->nombre_de_pieces,
                 'nombre_de_pieces_fini' => $data->nombre_de_pieces_fini,
                 'nombre_de_pieces_semi_fini' => $data->nombre_de_pieces_semi_fini,
@@ -27,13 +26,11 @@ class SuiviCommande extends Controller
                 'nombre_de_pieces_reste_a_livre' => $data->nombre_de_pieces_reste_a_livre,
                 'rest' => $data->rest,
                 'qty_transferred' => $data->qty_transferred,
-                'client_transferred_to' => $data->client->nom_client ?? 'Aucun Client !',
-                'quantite_en_m2' => $quantite_en_m2,
+                'client_transferred_to' => $data->client_transferred_to ?? 'Aucun Client !',
             ];
         })->toArray();
     
         // Calculate the total quantity in m²
-        $total_quantite_en_m2 = array_sum(array_column($articles, 'quantite_en_m2'));
 
         // Bns Data
         $code_commande = $record->code_commande;
@@ -52,7 +49,6 @@ class SuiviCommande extends Controller
             'client_name' => $client_name,
             'formatted_date' => $formatted_date,
             'status' => $status,
-            'total_quantite_en_m2' => $total_quantite_en_m2, // Add this line
         ]);
     }
 //     public function downloadSuivi(Commande $record)

@@ -213,7 +213,7 @@
                     <p><span class="fw-medium">Date de Création :</span> {{$date}}</p>
                 </div>
                 <div>
-                    <img width="250" src="{{ asset('assets/logo.svg') }}" alt="Company Logo" class="logo">
+                    <img width="250" src="{{ asset('assets/logo-csp.jpg') }}" alt="CSP Logo" class="logo object-contain">
                 </div>
                 <div class= "info-section " style="font-size: 16px">
                     <p><span class="fw-medium">Heure de Création :</span> {{$time}}</p>

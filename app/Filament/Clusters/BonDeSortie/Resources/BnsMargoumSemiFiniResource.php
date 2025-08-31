@@ -217,6 +217,10 @@ class BnsMargoumSemiFiniResource extends Resource
 
                 Action::make('status')
                     ->label('')
+                    ->modalHeading('Confirm Status Update')
+                    ->modalDescription('Are you sure you want to update the status of this bon sortie? This will affect the commande articles.')
+                    ->modalSubmitActionLabel('Yes, Update Status')
+                    ->modalCancelActionLabel('Cancel')
                     ->action(function (Model $record) {
                         // Find the margoum_fini_article records
                         $BnsMargoumArticles = BnsMargoumSemiFiniArticles::where('bns_margoum_semi_fini_id', $record->id)->get();
@@ -255,7 +259,6 @@ class BnsMargoumSemiFiniResource extends Resource
                             'status' => true,
                         ]);
                     })
-                    ->requiresConfirmation()
                     ->disabled(fn(Model $record) => $record->status)
                     ->color('success')
                     ->icon('heroicon-m-check-badge'),

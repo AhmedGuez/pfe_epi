@@ -147,42 +147,45 @@ class ArrivageMatierePremiereResource extends Resource
                 ->label('')
                 ->visible(fn ($record) => in_array($record->status, [false, 0, 'false'], true)),
                 
-                    Action::make('status')
-                        ->label('Add To Stock')
-                        ->action(function (Model $record) {
-                            // Get the articles associated with this arivage
-                            $articles = $record->articles;
-                
-                            foreach ($articles as $article) {
-                                // Check if a stock entry with the same code_article and categorie_id exists
-                                $existingStock = StockMatierePremiere::where('article_matiere_premiere_id', $article->article_matiere_premiere_id)
-                                    ->where('categorie_id', $article->categorie_id)
-                                    ->first();
-                
-                                if ($existingStock) {
-                                    // Update the quantity of the existing stock
-                                    $existingStock->quantity += $article->quantity;
-                                    $existingStock->save();
-                                } else {
-                                    // Create a new stock entry
-                                    StockMatierePremiere::create([
-                                        'article_matiere_premiere_id' => $article->article_matiere_premiere_id,
-                                        'categorie_id' => $article->categorie_id,
-                                        'quantity' => $article->quantity,
-                                        'unite' => $article->unite,
-                                    ]);
-                                }
+                Action::make('status')
+                    ->label('Add To Stock')
+                    ->modalHeading('Confirm Add To Stock')
+                    ->modalDescription('Are you sure you want to add these items to stock? This action cannot be undone.')
+                    ->modalSubmitActionLabel('Yes, Add To Stock')
+                    ->modalCancelActionLabel('Cancel')
+                    ->action(function (Model $record) {
+                        // Get the articles associated with this arivage
+                        $articles = $record->articles;
+            
+                        foreach ($articles as $article) {
+                            // Check if a stock entry with the same code_article and categorie_id exists
+                            $existingStock = StockMatierePremiere::where('article_matiere_premiere_id', $article->article_matiere_premiere_id)
+                                ->where('categorie_id', $article->categorie_id)
+                                ->first();
+            
+                            if ($existingStock) {
+                                // Update the quantity of the existing stock
+                                $existingStock->quantity += $article->quantity;
+                                $existingStock->save();
+                            } else {
+                                // Create a new stock entry
+                                StockMatierePremiere::create([
+                                    'article_matiere_premiere_id' => $article->article_matiere_premiere_id,
+                                    'categorie_id' => $article->categorie_id,
+                                    'quantity' => $article->quantity,
+                                    'unite' => $article->unite,
+                                ]);
                             }
-                
-                            // Update the status of the $record
-                            $record->update([
-                                'status' => true,
-                            ]);
-                        })
-                        ->requiresConfirmation()
-                        ->disabled(fn(Model $record) => $record->status)
-                        ->color('success')
-                        ->icon('heroicon-m-check-badge'),
+                        }
+            
+                        // Update the status of the $record
+                        $record->update([
+                            'status' => true,
+                        ]);
+                    })
+                    ->disabled(fn(Model $record) => $record->status)
+                    ->color('success')
+                    ->icon('heroicon-m-check-badge'),
                 
             ])
             ->bulkActions([
