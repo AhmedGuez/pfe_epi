@@ -10,7 +10,7 @@
             font-family: 'Inter', sans-serif;
             background: linear-gradient(135deg, #1e293b, #334155);
         }
-        .hover-effect:hover {
+        .hover-effect:hover { 
             transform: scale(1.05);
             box-shadow: 0 10px 30px rgba(0, 195, 255, 0.4);
         }
