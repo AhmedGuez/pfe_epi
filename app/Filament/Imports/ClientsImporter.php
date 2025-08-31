@@ -23,19 +23,15 @@ class ClientsImporter extends Importer
                 ->requiredMapping()
                 ->rules(['required', 'string', 'max:255'])
                 ->example('John Doe'),
-
             ImportColumn::make('cin')
                 ->rules(['nullable', 'string', 'max:255'])
                 ->example('12345678'),
-
             ImportColumn::make('phone')
                 ->rules(['nullable', 'string', 'max:255'])
                 ->example('+216 123 456'),
-
             ImportColumn::make('adresse')
                 ->rules(['nullable', 'string', 'max:255'])
                 ->example('123 Main Street'),
-
             ImportColumn::make('about_client')
                 ->rules(['nullable', 'string', 'max:1000'])
                 ->example('Preferred client with special requirements'),

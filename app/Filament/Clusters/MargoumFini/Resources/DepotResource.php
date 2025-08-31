@@ -66,8 +66,8 @@ class DepotResource extends Resource
     {
         return [
             'index' => Pages\ListDepots::route('/'),
-            // 'create' => Pages\CreateDepot::route('/create'),
-            // 'edit' => Pages\EditDepot::route('/{record}/edit'),
+            'create' => Pages\CreateDepot::route('/create'),
+            'edit' => Pages\EditDepot::route('/{record}/edit'),
         ];
     }
 }

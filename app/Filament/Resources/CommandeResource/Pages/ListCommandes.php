@@ -15,16 +15,38 @@ class ListCommandes extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        return [
-            Actions\CreateAction::make()->label('+'),
-        ];
+        // Only show create action for admin roles
+        if (auth()->check() && (
+            auth()->user()->hasRole('Superadmin') ||
+            auth()->user()->hasRole('Superviseur') ||
+            auth()->user()->hasRole('rh') ||
+            auth()->user()->hasRole('Agent Commercial')
+        )) {
+            return [
+                Actions\CreateAction::make()->label('+'),
+            ];
+        }
+
+        // Return empty array for client users
+        return [];
     }
 
     protected function getHeaderWidgets(): array
     {
-        return [
-            CommandeResource\Widgets\CommandeChart::class,
-        ];
+        // Only show header widgets for admin and agent commercial roles
+        if (auth()->check() && (
+            auth()->user()->hasRole('Superadmin') ||
+            auth()->user()->hasRole('Superviseur') ||
+            auth()->user()->hasRole('rh') ||
+            auth()->user()->hasRole('Agent Commercial')
+        )) {
+            return [
+                CommandeResource\Widgets\CommandeChart::class,
+            ];
+        }
+
+        // Return empty array for client users
+        return [];
     }
 
     public function getTabs(): array

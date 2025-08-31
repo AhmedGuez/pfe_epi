@@ -77,8 +77,8 @@ class StockMatierePremiereResource extends Resource
     {
         return [
             'index' => Pages\ListStockMatierePremieres::route('/'),
-            // 'create' => Pages\CreateStockMatierePremiere::route('/create'),
-            // 'edit' => Pages\EditStockMatierePremiere::route('/{record}/edit'),
+            'create' => Pages\CreateStockMatierePremiere::route('/create'),
+            'edit' => Pages\EditStockMatierePremiere::route('/{record}/edit'),
         ];
     }
 }

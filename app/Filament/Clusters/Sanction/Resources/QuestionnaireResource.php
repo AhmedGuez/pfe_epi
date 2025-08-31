@@ -92,8 +92,8 @@ public static function table(Table $table): Table
     {
         return [
             'index' => Pages\ListQuestionnaires::route('/'),
-            // 'create' => Pages\CreateQuestionnaire::route('/create'),
-            // 'edit' => Pages\EditQuestionnaire::route('/{record}/edit'),
+            'create' => Pages\CreateQuestionnaire::route('/create'),
+            'edit' => Pages\EditQuestionnaire::route('/{record}/edit'),
         ];
     }
 }

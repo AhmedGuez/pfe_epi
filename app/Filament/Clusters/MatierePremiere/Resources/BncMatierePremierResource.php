@@ -179,6 +179,10 @@ class BncMatierePremierResource extends Resource
                     
                     Action::make('status')
                     ->label('Confirmer et Notifier')
+                    ->modalHeading('Confirm Order')
+                    ->modalDescription('Are you sure you want to confirm this order? This will send notifications to warehouse managers.')
+                    ->modalSubmitActionLabel('Yes, Confirm Order')
+                    ->modalCancelActionLabel('Cancel')
                     ->action(function (Model $record) {
                 
                         // Update status
@@ -210,7 +214,6 @@ class BncMatierePremierResource extends Resource
                         
                         }
                     })
-                    ->requiresConfirmation()
                     ->disabled(fn (Model $record) => $record->status)
                     ->color('success')
                     ->icon('heroicon-m-check-badge')
@@ -238,8 +241,8 @@ class BncMatierePremierResource extends Resource
         return [
             'index' => Pages\ListBncMatierePremiers::route('/'),
             'view' => Pages\BncMatierePremiereView::route('/{record}'),
-            // 'create' => Pages\CreateBncMatierePremier::route('/create'),
-            // 'edit' => Pages\EditBncMatierePremier::route('/{record}/edit'),
+            'create' => Pages\CreateBncMatierePremier::route('/create'),
+            'edit' => Pages\EditBncMatierePremier::route('/{record}/edit'),
         ];
     }
 }

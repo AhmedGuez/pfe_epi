@@ -44,4 +44,61 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * Get the clients that this user is associated with.
+     */
+    public function clients()
+    {
+        return $this->belongsToMany(Client::class, 'client_user')
+                    ->withPivot('role', 'is_primary')
+                    ->withTimestamps();
+    }
+
+    /**
+     * Get the primary client for this user.
+     */
+    public function primaryClient()
+    {
+        return $this->belongsTo(Client::class, 'id', 'user_id');
+    }
+
+    /**
+     * Check if user has access to a specific client.
+     */
+    public function hasClientAccess($clientId, $role = null)
+    {
+        $query = $this->clients()->where('client_id', $clientId);
+        
+        if ($role) {
+            $query->wherePivot('role', $role);
+        }
+        
+        return $query->exists();
+    }
+
+    /**
+     * Get the role for a specific client.
+     */
+    public function getClientRole($clientId)
+    {
+        $client = $this->clients()->where('client_id', $clientId)->first();
+        return $client ? $client->pivot->role : null;
+    }
+
+    /**
+     * Check if user is a client (has any client relationship).
+     */
+    public function isClient()
+    {
+        return $this->clients()->exists();
+    }
+
+    /**
+     * Check if user has a specific role in any client relationship.
+     */
+    public function hasClientRole($role)
+    {
+        return $this->clients()->wherePivot('role', $role)->exists();
+    }
 }

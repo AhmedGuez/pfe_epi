@@ -16,19 +16,14 @@ class ClientsExporter extends Exporter
         return [
             ExportColumn::make('code_client')
                 ->label('Client Code'),
-
             ExportColumn::make('nom_client')
                 ->label('Client Name'),
-
             ExportColumn::make('cin')
                 ->label('CIN'),
-
             ExportColumn::make('phone')
                 ->label('Phone'),
-
             ExportColumn::make('adresse')
                 ->label('Address'),
-
             ExportColumn::make('about_client')
                 ->label('About Client'),
         ];

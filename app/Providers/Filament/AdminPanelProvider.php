@@ -65,27 +65,21 @@ class AdminPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
-            
             ->authMiddleware([
                 Authenticate::class,
             ])
-            
-            
-            ->maxContentWidth(MaxWidth::ScreenTwoExtraLarge )
+            ->maxContentWidth(MaxWidth::ScreenTwoExtraLarge)
             ->plugins([
                 FilamentSpatieRolesPermissionsPlugin::make(),
                 FilamentApexChartsPlugin::make(),
                 FilamentFullCalendarPlugin::make()
-                ->selectable(true)
-                ->editable(true)
-                ->locale(config('app.locale'))
-                // GlobalSearchModalPlugin::make() ->closeByEscaping(enabled: false)
+                    ->selectable(true)
+                    ->editable(true)
+                    ->locale(config('app.locale'))
             ])
             ->sidebarCollapsibleOnDesktop()
             ->brandName('CSP SOLUTIONS')
-            ->favicon(asset('assets/logo-black.png'))
-            // ->brandLogo(asset('assets/logo-gold.png'))
+            ->favicon(asset('assets/logo-csp.jpg'))
             ->brandLogoHeight('4rem');
-            
     }
 }

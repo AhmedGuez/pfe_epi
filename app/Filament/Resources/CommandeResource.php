@@ -19,6 +19,9 @@ use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use App\Filament\Actions\DirectDeleteAction;
+use Illuminate\Database\Eloquent\Collection;
+use Filament\Notifications\Notification;
 
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\ActionGroup;
@@ -27,6 +30,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 class CommandeResource extends Resource
 {
@@ -35,6 +39,56 @@ class CommandeResource extends Resource
     protected static ?string $navigationGroup = 'Gestion des Commandes Clients';
     protected static ?string $navigationLabel = "Liste des Commandes";
     protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return auth()->check() && (
+            auth()->user()->hasRole('Superadmin') ||
+            auth()->user()->hasRole('Superviseur') ||
+            auth()->user()->hasRole('rh') ||
+            auth()->user()->hasRole('Agent Commercial') ||
+            auth()->user()->isClient()
+        );
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery()
+            ->with(['client:id,nom_entreprise']); // Eager load client relationship with only needed columns
+
+        // If user is a client, only show their own commandes
+        if (auth()->user()->isClient()) {
+            $user = auth()->user();
+            $clientIds = $user->clients()->pluck('clients.id');
+
+            if ($clientIds->isNotEmpty()) {
+                $query->whereIn('client_id', $clientIds);
+            } else {
+                // If client user has no associated clients, show nothing
+                $query->whereRaw('1 = 0');
+            }
+        }
+
+        return $query;
+    }
+
+    public static function canCreate(): bool
+    {
+        // Only admin users can create commandes
+        return auth()->user()->hasRole('Superadmin') || auth()->user()->hasRole('Superviseur') || auth()->user()->hasRole('rh') || auth()->user()->hasRole('Agent Commercial');
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        // Only admin users can edit commandes
+        return auth()->user()->hasRole('Superadmin') || auth()->user()->hasRole('Superviseur') || auth()->user()->hasRole('rh') || auth()->user()->hasRole('Agent Commercial');
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        // Only admin users can delete commandes
+        return auth()->user()->hasRole('Superadmin') || auth()->user()->hasRole('Superviseur') || auth()->user()->hasRole('rh') || auth()->user()->hasRole('Agent Commercial');
+    }
 
     public static function form(Form $form): Form
     {
@@ -51,12 +105,9 @@ class CommandeResource extends Resource
 
                     Select::make('client_id')
                         ->label('Client')
-                        ->options(
-                            Client::all()
-                                ->filter(fn($client) => !is_null($client->nom_entreprise))
-                                ->pluck('nom_entreprise', 'id')
-                        )
+                        ->relationship('client', 'nom_entreprise')
                         ->searchable()
+                        ->preload()
                         ->required(),
 
                     ToggleButtons::make('status')
@@ -74,15 +125,10 @@ class CommandeResource extends Resource
                     ->schema([
                         Select::make('product_id')
                             ->label('Code Article')
-                            ->options(
-                                Product::all()
-                                    ->filter(fn($product) => !is_null($product->code_article))
-                                    ->pluck('code_article', 'id')
-                            )
-                            ->preload()
-                            ->searchable()
-                            ->required()
                             ->relationship('product', 'code_article')
+                            ->searchable()
+                            ->preload()
+                            ->required()
                             ->createOptionForm([
                                 TextInput::make('code_article')
                                     ->required()
@@ -130,10 +176,26 @@ class CommandeResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('client.nom_entreprise')->searchable()->sortable()->alignCenter(),
-                TextColumn::make('code_commande')->searchable()->sortable()->alignCenter(),
-                TextColumn::make('date_commande')->searchable()->sortable()->alignCenter(),
-                TextColumn::make('status')->badge()->alignCenter(),
+                TextColumn::make('client.nom_entreprise')
+                    ->label('Client')
+                    ->searchable()
+                    ->sortable()
+                    ->alignCenter(),
+                TextColumn::make('code_commande')
+                    ->label('N° Commande')
+                    ->searchable()
+                    ->sortable()
+                    ->alignCenter(),
+                TextColumn::make('date_commande')
+                    ->label('Date')
+                    ->date('d/m/Y')
+                    ->searchable()
+                    ->sortable()
+                    ->alignCenter(),
+                TextColumn::make('status')
+                    ->label('Statut')
+                    ->badge()
+                    ->alignCenter(),
                 IconColumn::make('is_transfered')
                     ->label('Transfert')
                     ->boolean()
@@ -144,79 +206,89 @@ class CommandeResource extends Resource
                     ->alignCenter(),
             ])
             ->defaultSort('created_at', 'desc')
+            ->defaultPaginationPageOption(25) // Set default pagination to 25 records
             ->filters([
                 Filter::make('date_filter')
                     ->form([
-                        DatePicker::make('date')->label('Date'),
+                        DatePicker::make('date_from')->label('Date de début'),
+                        DatePicker::make('date_to')->label('Date de fin'),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
-                        if (!$data['date']) return $query;
-                        return $query->whereDate('created_at', $data['date']);
-                    }),
-
-                Filter::make('client_filter')
-                    ->form([
-                        Select::make('client_id')
-                            ->label('Client')
-                            ->options(
-                                Client::all()
-                                    ->filter(fn($client) => !is_null($client->nom_client))
-                                    ->pluck('nom_client', 'id')
+                        return $query
+                            ->when(
+                                $data['date_from'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('date_commande', '>=', $date),
                             )
-                    ])
-                    ->query(function (Builder $query, array $data): Builder {
-                        if (!$data['client_id']) return $query;
-                        return $query->where('client_id', $data['client_id']);
+                            ->when(
+                                $data['date_to'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('date_commande', '<=', $date),
+                            );
                     }),
-
                 Filter::make('status_filter')
                     ->form([
                         Select::make('status')
                             ->label('Status')
                             ->options([
-                                'en cours' => 'Commande en Cours',
-                                'en attente' => 'Commande en Attente',
-                                'terminer' => 'Commande Terminée',
-                                'annuler' => 'Commande Annulée',
+                                'en cours' => 'En cours',
+                                'en attente' => 'En attente',
+                                'terminer' => 'Terminé',
+                                'annuler' => 'Annulé',
                             ])
+                            ->required(),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
-                        if (!isset($data['status'])) return $query;
-                        return $query->where('status', $data['status']);
+                        return $query
+                            ->when(
+                                $data['status'],
+                                fn (Builder $query, $status): Builder => $query->where('status', $status),
+                            );
+                    }),
+                Filter::make('client_filter')
+                    ->form([
+                        Select::make('client_id')
+                            ->label('Client')
+                            ->relationship('client', 'nom_entreprise')
+                            ->searchable()
+                            ->preload()
+                            ->required(),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['client_id'],
+                                fn (Builder $query, $clientId): Builder => $query->where('client_id', $clientId),
+                            );
                     }),
             ])
-            ->filtersFormColumns(3)
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                // Action::make('Recap Commande')
-                //     ->icon('heroicon-o-printer')
-                //     ->color('success')
-                //     ->url(fn(Commande $record) => route('suivi.pdf.download', $record))
-                //     ->openUrlInNewTab(),
-                // ActionGroup::make([
-                //     Action::make('Suivi Commande')
-                //         ->icon('heroicon-o-folder-arrow-down')
-                //         ->url(fn(Commande $record) => route('commande.pdf.download', $record))
-                //         ->color('warning')
-                //         ->openUrlInNewTab(),
-                //     Action::make('Commande Journalier')
-                //         ->icon('heroicon-o-printer')
-                //         ->color('success')
-                //         ->url(fn(Commande $record) => route('Jrcommande.pdf.download', $record))
-                //         ->openUrlInNewTab(),
-                // ])->icon('heroicon-m-ellipsis-horizontal'),
+                Action::make('print')
+                    ->label('Imprimer')
+                    ->icon('heroicon-o-printer')
+                    ->color('success')
+                    ->url(fn (Commande $record): string => route('commande.print', $record))
+                    ->openUrlInNewTab()
+                    ->visible(fn (): bool => auth()->user()->hasRole('Superadmin') || auth()->user()->hasRole('Superviseur') || auth()->user()->hasRole('rh') || auth()->user()->hasRole('Agent Commercial') || auth()->user()->isClient()),
+                Tables\Actions\EditAction::make()
+                    ->visible(fn (): bool => auth()->user()->hasRole('Superadmin') || auth()->user()->hasRole('Superviseur') || auth()->user()->hasRole('rh') || auth()->user()->hasRole('Agent Commercial')),
+                DirectDeleteAction::make()
+                    ->visible(fn (): bool => auth()->user()->hasRole('Superadmin') || auth()->user()->hasRole('Superviseur') || auth()->user()->hasRole('rh') || auth()->user()->hasRole('Agent Commercial')),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->action(function (Collection $records) {
+                            $records->each->delete();
+                            Notification::make()
+                                ->title('Commandes supprimées')
+                                ->body(count($records) . ' commande(s) supprimée(s) avec succès.')
+                                ->success()
+                                ->send();
+                        })
+                        ->requiresConfirmation(false)
+                        ->deselectRecordsAfterCompletion()
+                        ->visible(fn (): bool => auth()->user()->hasRole('Superadmin') || auth()->user()->hasRole('Superviseur') || auth()->user()->hasRole('rh') || auth()->user()->hasRole('Agent Commercial')),
                 ]),
-            ])
-            ->groups([
-                Tables\Grouping\Group::make('created_at')
-                    ->label('Date')
-                    ->date()
-                    ->collapsible(),
             ]);
     }
 
@@ -233,5 +305,23 @@ class CommandeResource extends Resource
             'view' => Pages\ViewCommande::route('/{record}'),
             'edit' => Pages\EditCommande::route('/{record}/edit'),
         ];
+    }
+
+    public static function getNavigationGroup(): ?string
+    {
+        if (auth()->user()->isClient()) {
+            return 'Mes Commandes';
+        }
+
+        return 'Gestion des Commandes Clients';
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        if (auth()->user()->isClient()) {
+            return 'Mes Commandes';
+        }
+
+        return 'Liste des Commandes';
     }
 }

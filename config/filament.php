@@ -21,9 +21,9 @@ return [
         //     'broadcaster' => 'pusher',
         //     'key' => env('VITE_PUSHER_APP_KEY'),
         //     'cluster' => env('VITE_PUSHER_APP_CLUSTER'),
-        //     'wsHost' => env('VITE_PUSHER_HOST'),
-        //     'wsPort' => env('VITE_PUSHER_PORT'),
-        //     'wssPort' => env('VITE_PUSHER_PORT'),
+        //     'wsHost' => env('VITE_PUSHER_WS_HOST'),
+        //     'wsPort' => env('VITE_PUSHER_WS_PORT'),
+        //     'wssPort' => env('VITE_PUSHER_WSS_PORT'),
         //     'authEndpoint' => '/api/v1/broadcasting/auth',
         //     'disableStats' => true,
         //     'encrypted' => true,
@@ -70,8 +70,38 @@ return [
     |
     */
 
-    'livewire_loading_delay' => 'default',
+    'livewire_loading_delay' => 'none',
 
-    
+    /*
+    |--------------------------------------------------------------------------
+    | Modal Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Configure modal behavior and performance settings.
+    |
+    */
+
+    'modal' => [
+        'close_button' => true,
+        'close_on_click_outside' => true,
+        'close_on_escape' => true,
+        'persistent' => false,
+        'max_width' => '2xl',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Performance Settings
+    |--------------------------------------------------------------------------
+    |
+    | Configure performance-related settings for better user experience.
+    |
+    */
+
+    'performance' => [
+        'enable_loading_states' => true,
+        'enable_persistent_loading_states' => false,
+        'enable_loading_indicators' => true,
+    ],
 
 ];

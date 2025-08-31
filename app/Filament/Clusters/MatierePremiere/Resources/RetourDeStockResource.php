@@ -163,6 +163,10 @@ class RetourDeStockResource extends Resource
                 
                     Action::make('status')
                         ->label('')
+                        ->modalHeading('Confirm Return to Stock')
+                        ->modalDescription('Are you sure you want to return these items to stock? This will update the stock quantities.')
+                        ->modalSubmitActionLabel('Yes, Return to Stock')
+                        ->modalCancelActionLabel('Cancel')
                         ->action(function (Model $record) {
                             // Get the articles associated with this arivage
                             $articles = $record->articles;
@@ -193,7 +197,6 @@ class RetourDeStockResource extends Resource
                                 'status' => true,
                             ]);
                         })
-                        ->requiresConfirmation()
                         ->disabled(fn(Model $record) => $record->status)
                         ->color('success')
                         ->icon('heroicon-m-check-badge'),
@@ -224,8 +227,8 @@ class RetourDeStockResource extends Resource
     {
         return [
             'index' => Pages\ListRetourDeStocks::route('/'),
-            // 'create' => Pages\CreateRetourDeStock::route('/create'),
-            // 'edit' => Pages\EditRetourDeStock::route('/{record}/edit'),
+            'create' => Pages\CreateRetourDeStock::route('/create'),
+            'edit' => Pages\EditRetourDeStock::route('/{record}/edit'),
         ];
     }
 }

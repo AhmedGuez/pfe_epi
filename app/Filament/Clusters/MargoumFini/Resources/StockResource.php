@@ -29,64 +29,49 @@ class StockResource extends Resource
     }
 
     public static function table(Table $table): Table
-{
-    $depots = Depot::all();
-
-    $columns = [
-        TextColumn::make('code_article')
-            ->label('Code Article')
-            ->searchable()
-            ->sortable()
-            ->alignCenter(),
-    ];
-
-    // Add dynamic columns for each depot
-    foreach ($depots as $depot) {
-        $columns[] = TextColumn::make("depot_{$depot->id}")
-            ->label($depot->name)
-            ->alignCenter()
-            ->getStateUsing(function (Product $record) use ($depot) {
-                return static::getStockForProductAndDepot($record->id, $depot->id);
-            });
-    }
-
-    // Add total stock column
-    $columns[] = TextColumn::make('total_stock')
-        ->label('Total Stock')
-        ->alignCenter()
-        ->getStateUsing(function (Product $record) {
-            return static::getTotalStockForProduct($record->id);
-        })
-        ->color('primary')
-        ->weight('bold');
-
-    return $table
-        ->columns($columns)
-        ->query(
-            Product::query()->whereIn('id', function ($query) {
-                $query->select('product_id')
-                    ->from('stock_movements')
-                    ->groupBy('product_id')
-                    ->havingRaw('SUM(CASE WHEN type = "IN" THEN quantity ELSE -quantity END) > 0');
-            })
-        )
-        ->filters([
-            Tables\Filters\SelectFilter::make('depot')
-                ->label('Filtrer par dépôt')
-                ->options($depots->pluck('name', 'id'))
-                ->query(function (Builder $query, array $data) {
-                    if (!empty($data['value'])) {
-                        $depotId = $data['value'];
-                        $query->whereHas('stockMovements', function ($q) use ($depotId) {
-                            $q->where('depot_id', $depotId);
+    {
+        $depots = Depot::all();
+        
+        return $table
+            ->query(
+                Product::query()->whereIn('id', function ($query) {
+                    $query->select('product_id')
+                        ->from('stock_movements')
+                        ->groupBy('product_id')
+                        ->havingRaw('SUM(CASE WHEN type = "IN" THEN quantity ELSE -quantity END) > 0');
+                })
+            )
+            ->columns([
+                TextColumn::make('code_article')->label('Code Article')->searchable()->sortable()->alignCenter(),
+                TextColumn::make('couleur')->label('Couleur')->searchable()->sortable()->alignCenter(),
+                TextColumn::make('largeur')->label('Largeur')->searchable()->sortable()->alignCenter(),
+                TextColumn::make('hauteur')->label('Hauteur')->searchable()->sortable()->alignCenter(),
+                TextColumn::make('coefficient_metrage')->label('Coefficient Métrage')->searchable()->sortable()->alignCenter(),
+                ...$depots->map(function ($depot) {
+                    return TextColumn::make("stock_depot_{$depot->id}")
+                        ->label("Stock {$depot->name}")
+                        ->alignCenter()
+                        ->getStateUsing(function ($record) use ($depot) {
+                            return static::getStockForProductAndDepot($record->id, $depot->id);
                         });
-                    }
-                }),
-        ])
-        ->paginated(false)
-        ->actions([])
-        ->bulkActions([]);
-}
+                })->toArray(),
+                TextColumn::make('total_stock')
+                    ->label('Total Stock')
+                    ->alignCenter()
+                    ->getStateUsing(function ($record) {
+                        return static::getTotalStockForProduct($record->id);
+                    }),
+            ])
+            ->filters([
+                //
+            ])
+            ->actions([
+                Tables\Actions\ViewAction::make(),
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
+            ])
+            ->bulkActions([]);
+    }
 
     protected static function getStockForProductAndDepot($productId, $depotId): int
     {

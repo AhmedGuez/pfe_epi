@@ -23,7 +23,7 @@
     <div class="container mx-auto p-6 flex-grow">
         <!-- Logo Section -->
         <div class="flex justify-center mb-12">
-            <img src="{{ asset('assets/logo-gold.png') }}" alt="Usine Logo" class="h-24 w-auto">
+            <img src="{{ asset('assets/logo-csp.jpg') }}" alt="CSP Logo" class="h-24 w-auto object-contain">
         </div>
 
         <!-- Cards Section -->

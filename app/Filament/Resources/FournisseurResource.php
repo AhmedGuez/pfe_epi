@@ -15,6 +15,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Actions\DirectDeleteAction;
 
 class FournisseurResource extends Resource
 {
@@ -42,11 +43,13 @@ class FournisseurResource extends Resource
     {
         return $table
             ->columns([
-               TextColumn::make('id')->searchable()->sortable()->alignCenter(),
-               TextColumn::make('nom_fournisseur')->searchable()->sortable()->alignCenter(),
-               TextColumn::make('adresse')->searchable()->sortable()->alignCenter(),
-               TextColumn::make('num_tel')->searchable()->sortable()->alignCenter(),
-               TextColumn::make('produit')->searchable()->sortable()->alignCenter(),
+                TextColumn::make('nom_fournisseur')->searchable()->sortable()->alignCenter(),
+                TextColumn::make('nom_commercial')->searchable()->sortable()->alignCenter(),
+                TextColumn::make('adresse')->searchable()->sortable()->alignCenter(),
+                TextColumn::make('produit')->searchable()->sortable()->alignCenter(),
+                TextColumn::make('secteur')->searchable()->sortable()->alignCenter(),
+                TextColumn::make('adresse_mail')->searchable()->sortable()->alignCenter(),
+                TextColumn::make('num_tel')->searchable()->sortable()->alignCenter(),
             ])
             ->filters([
                 //
@@ -54,7 +57,7 @@ class FournisseurResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                DirectDeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

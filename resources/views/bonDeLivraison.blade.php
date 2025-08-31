@@ -33,7 +33,7 @@
             </div>
             <!-- Center Logo -->
             <div class="flex justify-center">
-                <img src="{{ asset('assets/logo.svg') }}" alt="Company Logo" class="w-48 sm:w-60">
+                <img src="{{ asset('assets/logo-csp.jpg') }}" alt="CSP Logo" class="w-48 sm:w-60 object-contain">
             </div>
             <!-- Right Section -->
             <div class="text-sm space-y-1 text-right">
